@@ -91,14 +91,38 @@ THE SOFTWARE.
 				android:gravity="right" />
 			<TextView android:id="@+id/composer" />
 		</TableRow>
-		<TableRow>
-			<TextView
-				android:text="@string/_format"
-				android:paddingRight="5dip"
-				android:gravity="right" />
-			<TextView android:id="@+id/format" />
-		</TableRow>
-		<LinearLayout android:id="@+id/controls_top">
+        <TableRow>
+            <TextView
+                    android:text="@string/_format"
+                    android:paddingRight="5dip"
+                    android:gravity="right" />
+            <TextView android:id="@+id/format" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                    android:text="@string/_rating"
+                    android:paddingRight="5dip"
+                    android:gravity="center_vertical|right" />
+            <LinearLayout>
+                <TextView
+                        android:id="@+id/ratingText"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center" />
+                <!--android:textSize="10sp"-->
+                <SeekBar
+                        android:id="@+id/ratingBar1"
+                        android:max="6"
+                        android:secondaryProgress="1"
+                        android:layout_height="30dp"
+                        android:layout_width="0px"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:paddingLeft="18dip"
+                        android:paddingRight="18dip" />
+                </LinearLayout>
+        </TableRow>
+        <LinearLayout android:id="@+id/controls_top">
 			<TextView
 				android:id="@+id/elapsed"
 				android:layout_height="wrap_content"

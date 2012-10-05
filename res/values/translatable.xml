@@ -49,8 +49,9 @@ THE SOFTWARE.
 	<string name="_artist">artist</string>
 	<string name="_album">album</string>
 	<string name="_year">year</string>
+    <string name="_rating">rating</string>
 
-	<!-- New Playlist Dialog -->
+    <!-- New Playlist Dialog -->
 	<string name="choose_playlist_name">Choose Playlist Name</string>
 	<string name="create">Create</string>
 	<string name="overwrite">Overwrite</string>
@@ -193,12 +194,22 @@ THE SOFTWARE.
 	<string name="stock_broadcast_title">Emulate Stock Broadcasts</string>
 	<string name="stock_broadcast_summary">Send broadcasts emulating those sent by the stock music player to work with 3rd party lockscreen controls, widgets, etc.</string>
 
-	<string name="media_scan">Refresh Library</string>
-	<string name="tap_to_scan">Tap to scan external storage for music</string>
-	<string name="scan_in_progress">Scan in progress…</string>
-	<string name="finished_scanning">Finished scanning. Tap to scan again.</string>
+    <string name="media_scan">Refresh Library</string>
+    <string name="tap_to_scan">Tap to scan external storage for music</string>
+    <string name="scan_in_progress">Scan in progress…</string>
+    <string name="finished_scanning">Finished scanning. Tap to scan again.</string>
 
-	<string name="about">About</string>
+    <string name="export_xml">Export Ratings</string>
+    <string name="tap_to_export">Tap to export ratings to external storage</string>
+    <string name="export_in_progress">Export in progress…</string>
+    <string name="finished_exporting">Finished exporting. Tap to scan again.</string>
+
+    <string name="import_xml">Import Ratings</string>
+    <string name="tap_to_import">Tap to import ratings to external storage</string>
+    <string name="import_in_progress">Import in progress…</string>
+    <string name="finished_importing">Finished importing. Tap to scan again.</string>
+
+    <string name="about">About</string>
 
 	<string name="tabs">Tab Order</string>
 	<string name="customize_tab_order">Adjust the order and visibility of library tabs</string>

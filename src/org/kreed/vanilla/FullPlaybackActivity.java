@@ -110,9 +110,22 @@ public class FullPlaybackActivity extends PlaybackActivity
 	private String mComposer;
 	private TextView mComposerView;
 	private String mFormat;
-	private TextView mFormatView;
+    private TextView mFormatView;
 
-	@Override
+    /**
+     * Added for Rating.
+     */
+    private String mRating;
+    private TextView mRatingView;
+    private SeekBar mRatingBar;
+    /**
+     * Rating prefs filename.
+     */
+    public static final String RATINGS_NAME = "RatingsFile";
+
+
+
+    @Override
 	public void onCreate(Bundle icicle)
 	{
 		super.onCreate(icicle);
@@ -190,7 +203,11 @@ public class FullPlaybackActivity extends PlaybackActivity
 		mEndButton.setOnClickListener(this);
 		registerForContextMenu(mEndButton);
 
-		setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, true));
+        mRatingView = (TextView)findViewById(R.id.ratingText);
+        mRatingBar = (SeekBar)findViewById(R.id.ratingBar1);
+        mRatingBar.setOnSeekBarChangeListener(this);
+
+        setControlsVisible(settings.getBoolean(PrefKeys.VISIBLE_CONTROLS, true));
 		setExtraInfoVisible(settings.getBoolean(PrefKeys.VISIBLE_EXTRA_INFO, false));
 		setDuration(0);
 	}
@@ -515,7 +532,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 			mYear = null;
 			mComposer = null;
 			mFormat = null;
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            mRating = null;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
 			CompatMetadata data = new CompatMetadata(song.path);
 
 			mGenre = data.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
@@ -544,8 +562,15 @@ public class FullPlaybackActivity extends PlaybackActivity
 				sb.append("kbps");
 			}
 			mFormat = sb.toString();
-
-			data.release();
+            long rating=getRating(mCurrentSong);
+            if (rating==-1) {
+                mRating = "???";
+                mRatingBar.setProgress(0);
+            } else {
+                mRating = rating + "/5";
+                mRatingBar.setProgress((int)(rating + 1));
+            }
+            data.release();
 		}
 
 		mUiHandler.sendEmptyMessage(MSG_COMMIT_INFO);
@@ -613,7 +638,8 @@ public class FullPlaybackActivity extends PlaybackActivity
 			mYearView.setText(mYear);
 			mComposerView.setText(mComposer);
 			mFormatView.setText(mFormat);
-			break;
+            mRatingView.setText(mRating);
+            break;
 		}
 		case MSG_UPDATE_POSITION:
 			updateQueuePosition();
@@ -625,26 +651,70 @@ public class FullPlaybackActivity extends PlaybackActivity
 		return true;
 	}
 
-	@Override
+    /**
+     * Get the rating of the given song.
+     *
+     * @param song The Song to get the rating from.
+     * @return The rating, or -1 if the given song is null.
+     */
+    public long getRating(Song song)
+    {
+        if (song == null)
+            return -1;
+        SharedPreferences settings = getSharedPreferences(RATINGS_NAME, 0);
+        return settings.getLong(song.path, -1);
+    }
+
+    /**
+     * Get the id of the given song.
+     *
+     * @param song The Song to get the rating from.
+     * @return The effective rating (the update could fail...).
+     */
+    public long setRating(Song song, long newRating)
+    {
+        if (song != null)   {
+            SharedPreferences settings = getSharedPreferences(RATINGS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putLong(song.path, newRating);
+            editor.commit();
+        }
+        return getRating(song);
+    }
+
+
+    @Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		if (fromUser) {
-			mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, progress * mDuration / 1000000));
-			PlaybackService.get(this).seekToProgress(progress);
-		}
+            if (seekBar.equals(mSeekBar)) {
+                mElapsedView.setText(DateUtils.formatElapsedTime(mTimeBuilder, progress * mDuration / 1000000));
+                PlaybackService.get(this).seekToProgress(progress);
+            }
+            if (seekBar.equals(mRatingBar)) {
+                setRating(mCurrentSong,progress - 1);
+                long rating=getRating(mCurrentSong);
+                if (rating==-1) {
+                    mRating = "???";
+                } else {
+                    mRating = rating + "/5";
+                }
+                mRatingView.setText(mRating);
+            }
+        }
 	}
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
-		mSeekBarTracking = true;
+        if (seekBar.equals(mSeekBar)) { mSeekBarTracking = true; }
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
-		mSeekBarTracking = false;
-	}
+        if (seekBar.equals(mSeekBar)) { mSeekBarTracking = false; }
+    }
 
 	public void performAction(Action action)
 	{

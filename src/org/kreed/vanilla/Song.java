@@ -84,7 +84,7 @@ public class Song implements Comparable<Song> {
 		MediaStore.Audio.Playlists.Members.TRACK,
 	};
 
-	/**
+    /**
 	 * A cache of 6 MiB of covers.
 	 */
 	private static class CoverCache extends LruCache<Long, Bitmap> {
@@ -222,20 +222,20 @@ public class Song implements Comparable<Song> {
 		trackNumber = cursor.getInt(8);
 	}
 
-	/**
-	 * Get the id of the given song.
-	 *
-	 * @param song The Song to get the id from.
-	 * @return The id, or 0 if the given song is null.
-	 */
-	public static long getId(Song song)
-	{
-		if (song == null)
-			return 0;
-		return song.id;
-	}
+    /**
+     * Get the id of the given song.
+     *
+     * @param song The Song to get the id from.
+     * @return The id, or 0 if the given song is null.
+     */
+    public static long getId(Song song)
+    {
+        if (song == null)
+            return 0;
+        return song.id;
+    }
 
-	static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
+    static final BitmapFactory.Options BITMAP_OPTIONS = new BitmapFactory.Options();
 
 	static {
 		BITMAP_OPTIONS.inPreferredConfig = Bitmap.Config.RGB_565;
